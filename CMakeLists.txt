@@ -79,3 +79,4 @@ message(NOTICE "Vulkan Include Path: ${Vulkan_INCLUDE_DIRS}")
 message(NOTICE "Vulkan Library Path: ${Vulkan_LIBRARIES}")
 
 add_subdirectory(00_test)
+add_subdirectory(01_base_code)
