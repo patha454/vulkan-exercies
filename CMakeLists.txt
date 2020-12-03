@@ -78,11 +78,4 @@ endif()
 message(NOTICE "Vulkan Include Path: ${Vulkan_INCLUDE_DIRS}")
 message(NOTICE "Vulkan Library Path: ${Vulkan_LIBRARIES}")
 
-add_executable(VulkanExercises main.cpp)
-target_include_directories(VulkanExercises
-    PRIVATE
-        "${GLM_INCLUDE_PATH}"
-        "${GLFW_INCLUDE_PATH}"
-        "${VULKAN_INCLUDE_PATH}")
-
-target_link_libraries(VulkanExercises "${GLFW_LIBRARY_PATH}" "${Vulkan_LIBRARIES}")
+add_subdirectory(00_test)
