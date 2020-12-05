@@ -1,8 +1,8 @@
 #include <stdexcept>
-#include "GLFW/glfw3.h"
+#include <iostream>
 #include "VulkanApplication.h"
 
-GLFWwindow* VulkanApplication::setupWindow()
+void VulkanApplication::setupWindow()
 {
     GLFWwindow* window = nullptr;
     if (glfwInit() == GLFW_FALSE)
@@ -21,7 +21,36 @@ GLFWwindow* VulkanApplication::setupWindow()
     {
         throw std::runtime_error("GLFW window could not be created.");
     }
-    return window;
+    this->window = window;
+}
+
+void VulkanApplication::createVkInstance()
+{
+    VkApplicationInfo appInfo{};
+    VkInstanceCreateInfo createInfo{};
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions = nullptr;
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Vulkan Exercise";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0 , 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+    appInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    if (glfwExtensions == nullptr)
+    {
+        throw std::runtime_error("Could not get GLFW VK extensions");
+    }
+    createInfo.enabledExtensionCount = glfwExtensionCount;
+    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    createInfo.enabledLayerCount = 0;
+    VkResult result = vkCreateInstance(&createInfo, nullptr, &this->vkInstance);
+    if (result != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create Vulkan instance.");
+    }
 }
 
 void VulkanApplication::cleanupWindow()
@@ -42,8 +71,8 @@ void VulkanApplication::run()
 
 void VulkanApplication::initVulkan()
 {
-    this->window = this->setupWindow();
-
+    this->setupWindow();
+    this->createVkInstance();
 }
 
 void VulkanApplication::mainLoop()
