@@ -21,6 +21,8 @@ private:
 
     void setupAppInfo(VkApplicationInfo* appInfo);
 
+    void checkExtensions(char** requiredExtensions, uint32_t requiredExtensionsCount);
+
     void createVkInstance();
 
     void cleanupWindow();

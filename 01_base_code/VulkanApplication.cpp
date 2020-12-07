@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <stdexcept>
+#include <cstring>
 #include <iostream>
+#include <vector>
 #include "VulkanApplication.h"
 
 void VulkanApplication::setupWindow()
@@ -34,6 +37,35 @@ void VulkanApplication::setupAppInfo(VkApplicationInfo* appInfo)
    appInfo->apiVersion = VK_API_VERSION_1_0;
 }
 
+void VulkanApplication::checkExtensions(char** requiredExtensions, uint32_t requiredExtensionsCount)
+{
+    uint32_t extensionCount = 0;
+    std::vector<VkExtensionProperties> extensions;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    extensions = std::vector<VkExtensionProperties>(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+    for (int i = 0; i < requiredExtensionsCount; i++)
+    {
+        char* requiredExtension = requiredExtensions[i];
+        auto result = std::find_if(
+            extensions.begin(),
+            extensions.end(),
+            [=](auto a)
+            {
+                return strcmp(a.extensionName, requiredExtension) == 0;
+            });
+        if (result == std::end(extensions))
+        {
+            throw std::runtime_error("Required extension unavailable: " + std::string(requiredExtension));
+        }
+        else
+        {
+            std::cout << "Found required extension " << requiredExtension << std::endl;
+        }
+    }
+}
+
+
 void VulkanApplication::createVkInstance()
 {
     VkApplicationInfo appInfo{};
@@ -42,6 +74,7 @@ void VulkanApplication::createVkInstance()
     const char** glfwExtensions = nullptr;
     this->setupAppInfo(&appInfo);
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    this->checkExtensions((char**) glfwExtensions, glfwExtensionCount);
     if (glfwExtensions == nullptr)
     {
         throw std::runtime_error("Could not get GLFW VK extensions");
