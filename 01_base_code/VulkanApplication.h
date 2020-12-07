@@ -19,6 +19,8 @@ private:
 
     void setupWindow();
 
+    void setupAppInfo(VkApplicationInfo* appInfo);
+
     void createVkInstance();
 
     void cleanupWindow();

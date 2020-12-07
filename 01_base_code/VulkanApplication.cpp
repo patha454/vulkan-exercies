@@ -24,25 +24,30 @@ void VulkanApplication::setupWindow()
     this->window = window;
 }
 
+void VulkanApplication::setupAppInfo(VkApplicationInfo* appInfo)
+{
+   appInfo->sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+   appInfo->pApplicationName = "Vulkan Exercise";
+   appInfo->applicationVersion = VK_MAKE_VERSION(0, 0, 0);
+   appInfo->pEngineName = "No engine";
+   appInfo->engineVersion = VK_MAKE_VERSION(0, 0, 0);
+   appInfo->apiVersion = VK_API_VERSION_1_0;
+}
+
 void VulkanApplication::createVkInstance()
 {
     VkApplicationInfo appInfo{};
     VkInstanceCreateInfo createInfo{};
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = nullptr;
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Vulkan Exercise";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0 , 0);
-    appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
-    appInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
+    this->setupAppInfo(&appInfo);
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
     if (glfwExtensions == nullptr)
     {
         throw std::runtime_error("Could not get GLFW VK extensions");
     }
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
     createInfo.enabledLayerCount = 0;
