@@ -124,4 +124,5 @@ void VulkanApplication::mainLoop()
 void VulkanApplication::cleanup()
 {
     this->cleanupWindow();
+    vkDestroyInstance(this->vkInstance, nullptr);
 }
